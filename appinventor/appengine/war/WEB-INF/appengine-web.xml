@@ -80,8 +80,8 @@
          to the site will receive an error page.
      -->
 
-    <property name="auth.usegoogle" value="true" />
-    <property name="auth.uselocal" value="true" />
+    <property name="auth.usegoogle" value="false" />
+    <property name="auth.uselocal" value="false" />
 
     <!-- Flags associated with localauth code -->
     <property name="localauth.mailserver" value="https://osiris.mit.edu/passmail/" />
