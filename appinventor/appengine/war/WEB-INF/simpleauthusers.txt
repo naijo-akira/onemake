@@ -1,0 +1,3 @@
+ユーザー名:パスワード
+alice:pass123
+bob:secret456
