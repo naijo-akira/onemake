@@ -84,7 +84,6 @@
 
 
     <!-- Flags associated with localauth code -->
-    <property name="localauth.mailserver" value="https://osiris.mit.edu/passmail/" />
     <property name="localauth.mailserver.password" value="changeme" />
 
     <!-- host[:port] to use for connecting to the build server -->
