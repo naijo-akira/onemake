@@ -88,6 +88,8 @@
 
     <!-- host[:port] to use for connecting to the build server -->
     <property name="build.server.host" value="localhost:9990" />
+    <property name="auth.hard.user" value="naijoakira@techtonix.co.jp"/>
+    <property name="auth.hard.pass" value="test1234"/>
 
     <!-- We provide below for a second buildserver. If this field is
          non-empty then the user is presented a choice of two different

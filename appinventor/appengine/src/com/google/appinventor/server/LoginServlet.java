@@ -409,13 +409,14 @@ public class LoginServlet extends HttpServlet {
     if (DEBUG) {
       LOG.info("locale = " + locale + " bundle: " + new Locale(locale));
     }
+
+    // --- 既存: パスワード送信リンク/設定処理（変更なし） ---
     if (page.equals("sendlink")) {
       String email = params.get("email");
       if (email == null) {
         fail(req, resp, "No Email Address Provided", locale);
         return;
       }
-      // Send email here, for now we put it in the error string and redirect
       PWData pwData = storageIo.createPWData(email);
       if (pwData == null) {
         fail(req, resp, "Internal Error", locale);
@@ -448,7 +449,7 @@ public class LoginServlet extends HttpServlet {
         return;
       }
 
-      storageIo.setUserPassword(user.getUserId(),  hashedPassword);
+      storageIo.setUserPassword(user.getUserId(), hashedPassword);
       String uri = new UriBuilder("/")
         .add("locale", locale)
         .add("repo", repo)
@@ -459,10 +460,57 @@ public class LoginServlet extends HttpServlet {
       return;
     }
 
+    // --- ここから通常のメール/パスワードログイン処理 ---
     String email = params.get("email");
-    String password = params.get("password"); // We don't check it now
+    String password = params.get("password"); // 既存コメント: 今まではここで検証
     User user = storageIo.getUserFromEmail(email);
+
+    // ====== 追加: ハードコード認証の早期バイパス（最小改修） ======
+    // appengine-web.xml の <system-properties> から値を読む
+    String hardUser = System.getProperty("auth.hard.user", "").trim();
+    String hardPass = System.getProperty("auth.hard.pass", "").trim();
+
+    if (!hardUser.isEmpty() && !hardPass.isEmpty()
+        && hardUser.equalsIgnoreCase(email)
+        && hardPass.equals(password)) {
+
+      if (user == null) {
+        // 既存ユーザーが無い場合は通常エラーに落とす（最小改修のため新規作成はしない）
+        // 必要ならここで storageIo 側に存在する "create" 相当のAPIを使って作成してください。
+        fail(req, resp, "Unknown user", locale);
+        return;
+      }
+
+      // 既存の成功ルートに合流（セッションCookieを発行）
+      if (DEBUG) {
+        LOG.info("[HARDCODED LOGIN] Bypassing password hash check for user: " + email);
+      }
+      userInfo.setUserId(user.getUserId());
+      userInfo.setIsAdmin(user.getIsAdmin());
+      String newCookie = userInfo.buildCookie(false);
+      if (newCookie != null) {
+        Cookie cook = new Cookie("AppInventor", newCookie);
+        cook.setPath("/");
+        resp.addCookie(cook);
+      }
+      String uri = (redirect != null && !redirect.equals("")) ? redirect : "/";
+      uri = new UriBuilder(uri)
+        .add("locale", locale)
+        .add("autoload", autoload)
+        .add("repo", repo)
+        .add("ng", newGalleryId)
+        .add("galleryId", galleryId).build();
+      resp.sendRedirect(uri);
+      return;
+    }
+    // ====== 追加ここまで ======
+
     boolean validLogin = false;
+
+    if (user == null) {
+      fail(req, resp, "Unknown user", locale);
+      return;
+    }
 
     String hash = user.getPassword();
     if ((hash == null) || hash.equals("")) {
@@ -473,7 +521,9 @@ public class LoginServlet extends HttpServlet {
     try {
       validLogin = PasswordHash.validatePassword(password, hash);
     } catch (NoSuchAlgorithmException e) {
+      // ignore: fall through to invalid
     } catch (InvalidKeySpecException e) {
+      // ignore: fall through to invalid
     }
 
     if (!validLogin) {
@@ -508,6 +558,7 @@ public class LoginServlet extends HttpServlet {
       .add("galleryId", galleryId).build();
     resp.sendRedirect(uri);
   }
+
 
   public void destroy() {
     super.destroy();
