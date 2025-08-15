@@ -61,7 +61,7 @@
 
     <!-- set to true if users should not be allowed to access the App
          Inventor server unless they are listed in the appengine/war/whitelist file -->
-    <property name="use.whitelist" value="false"/>
+    <property name="use.whitelist" value="true"/>
 
     <!-- Name of storage bucket in Google Cloud Store -->
     <property name="gcs.bucket" value="" />
@@ -79,7 +79,7 @@
          to the site will receive an error page.
      -->
     <property name="auth.usegoogle" value="false" />
-    <property name="auth.uselocal" value="true" />
+    <property name="auth.uselocal" value="false" />
     <property name="localauth.mailserver" value="http://localhost:8000/passmail"/>
 
 
@@ -88,8 +88,6 @@
 
     <!-- host[:port] to use for connecting to the build server -->
     <property name="build.server.host" value="localhost:9990" />
-    <property name="auth.hard.user" value="naijoakira@techtonix.co.jp"/>
-    <property name="auth.hard.pass" value="test1234"/>
 
     <!-- We provide below for a second buildserver. If this field is
          non-empty then the user is presented a choice of two different
