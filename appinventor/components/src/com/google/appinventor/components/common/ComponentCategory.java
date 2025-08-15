@@ -56,9 +56,9 @@ public enum ComponentCategory {
   DATASCIENCE("Data Science"),
   SENSORS("Sensors"),
   SOCIAL("Social"),
-  // STORAGE("Storage"),
+  STORAGE("Storage"),
   CONNECTIVITY("Connectivity"),
-  // LEGOMINDSTORMS("LEGO® MINDSTORMS®"),
+  LEGOMINDSTORMS("LEGO® MINDSTORMS®"),
   EXPERIMENTAL("Experimental"),
   EXTENSION("Extension"),
   FUTURE("Future"),
@@ -80,9 +80,9 @@ public enum ComponentCategory {
     DOC_MAP.put("Data Science", "datascience");
     DOC_MAP.put("Sensors", "sensors");
     DOC_MAP.put("Social", "social");
-    // DOC_MAP.put("Storage", "storage");
+    DOC_MAP.put("Storage", "storage");
     DOC_MAP.put("Connectivity", "connectivity");
-    // DOC_MAP.put("LEGO® MINDSTORMS®", "legomindstorms");
+    DOC_MAP.put("LEGO® MINDSTORMS®", "legomindstorms");
     DOC_MAP.put("Experimental", "experimental");
     DOC_MAP.put("Extension", "extension");
     DOC_MAP.put("Future", "future");
