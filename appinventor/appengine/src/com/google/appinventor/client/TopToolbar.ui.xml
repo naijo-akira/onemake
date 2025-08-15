@@ -97,7 +97,7 @@
     </ai:DropDownButton>
 
     <!-- Build Menu -->
-    <!-- <ai:DropDownButton name="Build" caption="{messages.buildTabName}"
+    <ai:DropDownButton name="Build" caption="{messages.buildTabName}"
                        styleName="ode-TopPanelButton" ui:field="buildDropDown"
                        visible="{hasWriteAccess}">
       <ai:DropDownItem name="BuildApk" caption="{messages.showExportAndroidApk}">
@@ -117,7 +117,7 @@
       <ai:DropDownItem name="Yail" caption="{messages.generateYailMenuItem}">
         <actions:GenerateYailAction/>
       </ai:DropDownItem>
-    </ai:DropDownButton> -->
+    </ai:DropDownButton>
 
     <!-- Settings Menu -->
     <ai:DropDownButton name="Settings" caption="{messages.settingsTabName}"
@@ -136,7 +136,7 @@
     </ai:DropDownButton>
 
     <!-- Help Menu -->
-    <!-- <ai:DropDownButton name="Help" caption="{messages.helpTabName}"
+    <ai:DropDownButton name="Help" caption="{messages.helpTabName}"
                        styleName="ode-TopPanelButton" ui:field="helpDropDown">
       <ai:DropDownItem name="About" caption="{messages.aboutMenuItem}">
         <actions:AboutAction/>
@@ -177,7 +177,7 @@
       <ai:DropDownItem name="ShowShortcuts" caption="{messages.showShortcuts}">
         <actions:ShowShortcutsAction/>
       </ai:DropDownItem>
-    </ai:DropDownButton> -->
+    </ai:DropDownButton>
 
     <!-- Admin Menu -->
     <ai:DropDownButton name="Admin" caption="{messages.adminTabName}"
