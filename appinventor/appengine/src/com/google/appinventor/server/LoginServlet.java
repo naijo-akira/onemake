@@ -458,6 +458,50 @@ public class LoginServlet extends HttpServlet {
         .add("galleryId", galleryId).build();
       resp.sendRedirect(uri);   // Logged in, go to service
       return;
+    }else if (page.equals("promote")) {
+      // ★ ブートストラップ用の秘密キー
+      String provided = params.get("secret");
+      String expected  = System.getProperty("bootstrap.admin.secret", "").trim();
+      if (expected.isEmpty() || !expected.equals(provided)) {
+        resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid or missing secret");
+        return;
+      }
+
+      String email = params.get("email");
+      if (email == null || email.isBlank()) {
+        resp.sendError(400, "email required");
+        return;
+      }
+      email = email.trim().toLowerCase();
+
+      // 既存ユーザー取得（なければ作成オプション）
+      User user = storageIo.getUserFromEmail(email);
+      if (user == null) {
+        // ★ 既にお持ちの createUser 実装に合わせて
+        String uuid = java.util.UUID.randomUUID().toString();
+        user = storageIo.createUser(uuid, email, /*isAdmin*/ true); // ここで管理者として作成
+      } else {
+        // 既存ユーザーを管理者へ昇格
+        user.setIsAdmin(true);
+        storageIo.saveUser(user); // ← あなたの StorageIo 実装に合わせて保存
+      }
+
+      // パスワードは空のまま。setpw 用URLを返す（メールは送らない）
+      PWData pw = storageIo.createPWData(email);
+      if (pw == null) {
+        resp.sendError(500, "createPWData failed");
+        return;
+      }
+      String link = trimPage(req) + pw.id + "/setpw";
+
+      resp.setStatus(200);
+      resp.setContentType("application/json; charset=utf-8");
+      resp.getWriter().printf(
+          "{\"email\":\"%s\",\"userId\":\"%s\",\"isAdmin\":true,\"setPasswordUrl\":\"%s\"}",
+          email, user.getUserId(), link
+      );
+      storageIo.cleanuppwdata();
+      return;
     }
 
     // --- ここから通常のメール/パスワードログイン処理 ---

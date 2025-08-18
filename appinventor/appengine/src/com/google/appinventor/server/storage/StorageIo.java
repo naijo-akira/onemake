@@ -48,6 +48,8 @@ public interface StorageIo {
    */
   User getUser(String userId);
 
+  User createUser(String uuid, String email, boolean isAdmin);
+
   /**
    * Returns user data given user id. If the user data for the given id
    * doesn't already exist in the storage, it should be created. email

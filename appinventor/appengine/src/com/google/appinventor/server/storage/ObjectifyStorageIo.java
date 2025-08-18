@@ -107,6 +107,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 /**
  * Implements the StorageIo interface using Objectify as the underlying data
  * store.
@@ -257,6 +259,30 @@ public class ObjectifyStorageIo implements StorageIo {
     return getUser(userId, null);
   }
 
+  @Override
+  public User createUser(String uuid, String email, boolean isAdmin) {
+    String normEmail = email.trim().toLowerCase(java.util.Locale.ROOT);
+
+    // 既存チェック（emailユニーク）
+    User existing = getUserFromEmail(normEmail);
+    if (existing != null) {
+      return existing;
+    }
+
+    // ★ UserData（永続層エンティティ）を作成
+    UserData ud = new UserData();
+    ud.id = uuid;              // ← あなたの UserData の主キー/フィールド名に合わせて
+    ud.email = normEmail;
+    ud.isAdmin = isAdmin;
+    ud.password = "";          // パスワードは未設定（空 or null）
+    ud.created = new java.util.Date();  // 監査用（フィールドがあれば）
+
+    ofy().save().entity(ud).now();
+
+    // 共有DTO User に変換して返す
+    // 既存の "UserData → User" 変換ヘルパー（例：makeUser/convertUser）があればそれを使う
+    return getUser(uuid, normEmail);
+  }
   /*
    * We return isAdmin if the UserData object has the flag set. However
    * even if we return it as false, if the user is logging in with Google
