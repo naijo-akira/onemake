@@ -261,30 +261,14 @@ public class ObjectifyStorageIo implements StorageIo {
   public User createUser(String uuid, String email, boolean isAdmin) {
     // 1) すでに居ればそれを返す
     String normEmail = (email == null) ? "" : email.trim().toLowerCase(java.util.Locale.ROOT);
-    User existing = getUserFromEmail(normEmail);
-    if (existing != null) {
-      // 管理者化が必要ならここで
-      if (isAdmin && !existing.getIsAdmin()) {
-        setUserAdmin(existing.getUserId(), true);
-      }
-      return existing;
-    }
 
     // 2) 既存のヘルパーを使って作成（←あなたの貼ってくれたメソッドを呼ぶ）
     Objectify datastore = ObjectifyService.begin();       // ★ ofy() 不要、begin() でOK
     UserData ud = createUser(datastore, uuid, normEmail); // ★ 既存ヘルパーの再利用
 
     // 3) 管理者化（UserData に isAdmin が“あるなら”直接更新、無いなら setUserAdmin を使う）
-    try {
-      // フィールドが存在する場合だけ
-      ud.isAdmin = isAdmin;            // ← 無い場合はこの行を削除
-      datastore.put(ud);
-    } catch (Throwable ignore) {
-      // isAdmin フィールドが無い構成なら専用APIで
-      if (isAdmin) {
-        setUserAdmin(ud.id /* or ud.userId */, true);     // フィールド名に合わせて
-      }
-    }
+    ud.isAdmin = isAdmin;            // ← 無い場合はこの行を削除
+    datastore.put(ud);
 
     // 4) 共有DTO(User) を既存経路で返す
     return getUser(uuid, normEmail);
@@ -399,7 +383,7 @@ public class ObjectifyStorageIo implements StorageIo {
     }
     UserData userData = new UserData();
     userData.id = userId;
-    userData.tosAccepted = false;
+    userData.tosAccepted = true;
     userData.settings = "";
     userData.email = email == null ? "" : email;
     userData.emaillower = email == null ? "" : emaillower;
