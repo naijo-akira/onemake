@@ -140,6 +140,11 @@ public class TopToolbar extends Composite {
     }
     buildDropDown.removeUnneededSeparators();
 
+    if (buildDropDown != null) {
+    buildDropDown.setVisible(false);                            // GWTの可視制御
+    buildDropDown.getElement().getStyle().setDisplay(Display.NONE); // CSSで完全非表示
+    }
+
     if (!Ode.getUserAutoloadProject()) {
       settingsDropDown.setItemHtmlById("AutoloadLastProject", MESSAGES.enableAutoload());
       settingsDropDown.setCommandById("AutoloadLastProject", new EnableAutoloadAction());
