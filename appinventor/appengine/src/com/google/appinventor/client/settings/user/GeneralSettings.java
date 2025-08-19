@@ -31,7 +31,7 @@ public final class GeneralSettings extends Settings {
         EditableProperty.TYPE_INVISIBLE));
     addProperty(new EditableProperty(this, SettingsConstants.DISABLED_USER_URL, "",
         EditableProperty.TYPE_INVISIBLE));
-    addProperty(new EditableProperty(this, SettingsConstants.USER_LAST_LOCALE, "en",
+    addProperty(new EditableProperty(this, SettingsConstants.USER_LAST_LOCALE, "ja",
         EditableProperty.TYPE_INVISIBLE));
     addProperty(new EditableProperty(this, SettingsConstants.USER_DYSLEXIC_FONT, "false",
         EditableProperty.TYPE_INVISIBLE));
@@ -39,7 +39,7 @@ public final class GeneralSettings extends Settings {
         EditableProperty.TYPE_INVISIBLE));
     addProperty(new EditableProperty(this, SettingsConstants.USER_NEW_LAYOUT, "true",
         EditableProperty.TYPE_INVISIBLE));
-    addProperty(new EditableProperty(this, SettingsConstants.USER_AUTOLOAD_PROJECT, "true",
+    addProperty(new EditableProperty(this, SettingsConstants.USER_AUTOLOAD_PROJECT, "false",
         EditableProperty.TYPE_INVISIBLE));
     addProperty(new EditableProperty(this, SettingsConstants.FOLDERS, "",
         EditableProperty.TYPE_INVISIBLE));

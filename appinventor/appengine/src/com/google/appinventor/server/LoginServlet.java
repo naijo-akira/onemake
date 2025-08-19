@@ -451,7 +451,7 @@ public class LoginServlet extends HttpServlet {
 
       storageIo.setUserPassword(user.getUserId(), hashedPassword);
       String uri = new UriBuilder("/")
-        .add("locale", locale)
+        .add("locale", "ja")
         .add("repo", repo)
         .add("autoload", autoload)
         .add("ng", newGalleryId)
