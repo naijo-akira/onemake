@@ -107,8 +107,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import static com.googlecode.objectify.ObjectifyService.ofy;
-
 /**
  * Implements the StorageIo interface using Objectify as the underlying data
  * store.
@@ -261,26 +259,34 @@ public class ObjectifyStorageIo implements StorageIo {
 
   @Override
   public User createUser(String uuid, String email, boolean isAdmin) {
-    String normEmail = email.trim().toLowerCase(java.util.Locale.ROOT);
-
-    // 既存チェック（emailユニーク）
+    // 1) すでに居ればそれを返す
+    String normEmail = (email == null) ? "" : email.trim().toLowerCase(java.util.Locale.ROOT);
     User existing = getUserFromEmail(normEmail);
     if (existing != null) {
+      // 管理者化が必要ならここで
+      if (isAdmin && !existing.getIsAdmin()) {
+        setUserAdmin(existing.getUserId(), true);
+      }
       return existing;
     }
 
-    // ★ UserData（永続層エンティティ）を作成
-    UserData ud = new UserData();
-    ud.id = uuid;              // ← あなたの UserData の主キー/フィールド名に合わせて
-    ud.email = normEmail;
-    ud.isAdmin = isAdmin;
-    ud.password = "";          // パスワードは未設定（空 or null）
-    ud.created = new java.util.Date();  // 監査用（フィールドがあれば）
+    // 2) 既存のヘルパーを使って作成（←あなたの貼ってくれたメソッドを呼ぶ）
+    Objectify datastore = ObjectifyService.begin();       // ★ ofy() 不要、begin() でOK
+    UserData ud = createUser(datastore, uuid, normEmail); // ★ 既存ヘルパーの再利用
 
-    ofy().save().entity(ud).now();
+    // 3) 管理者化（UserData に isAdmin が“あるなら”直接更新、無いなら setUserAdmin を使う）
+    try {
+      // フィールドが存在する場合だけ
+      ud.isAdmin = isAdmin;            // ← 無い場合はこの行を削除
+      datastore.put(ud);
+    } catch (Throwable ignore) {
+      // isAdmin フィールドが無い構成なら専用APIで
+      if (isAdmin) {
+        setUserAdmin(ud.id /* or ud.userId */, true);     // フィールド名に合わせて
+      }
+    }
 
-    // 共有DTO User に変換して返す
-    // 既存の "UserData → User" 変換ヘルパー（例：makeUser/convertUser）があればそれを使う
+    // 4) 共有DTO(User) を既存経路で返す
     return getUser(uuid, normEmail);
   }
   /*

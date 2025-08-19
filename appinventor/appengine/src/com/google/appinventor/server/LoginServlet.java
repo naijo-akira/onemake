@@ -468,7 +468,7 @@ public class LoginServlet extends HttpServlet {
       }
 
       String email = params.get("email");
-      if (email == null || email.isBlank()) {
+      if (email == null || email.trim().isEmpty()) {
         resp.sendError(400, "email required");
         return;
       }
@@ -482,8 +482,7 @@ public class LoginServlet extends HttpServlet {
         user = storageIo.createUser(uuid, email, /*isAdmin*/ true); // ここで管理者として作成
       } else {
         // 既存ユーザーを管理者へ昇格
-        user.setIsAdmin(true);
-        storageIo.saveUser(user); // ← あなたの StorageIo 実装に合わせて保存
+        userInfo.setIsAdmin(true);
       }
 
       // パスワードは空のまま。setpw 用URLを返す（メールは送らない）
