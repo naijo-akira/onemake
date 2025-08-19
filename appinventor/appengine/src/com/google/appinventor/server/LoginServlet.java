@@ -118,7 +118,7 @@ public class LoginServlet extends HttpServlet {
     HashMap<String, String> params = getQueryMap(queryString);
     // These params are passed around so they can take effect even if we
     // were not logged in.
-    String locale = params.get("locale");
+    String locale = "ja";
     String repo = params.get("repo");
     String galleryId = params.get("galleryId");
     String redirect = params.get("redirect");
@@ -174,7 +174,7 @@ public class LoginServlet extends HttpServlet {
         uri = redirect;
       }
       uri = new UriBuilder(uri)
-        .add("locale", locale)
+        .add("locale", "ja")
         .add("repo", repo)
         .add("autoload", autoload)
         .add("ng", newGalleryId)
@@ -185,7 +185,7 @@ public class LoginServlet extends HttpServlet {
       if (!loginUrl.isEmpty() && !page.equals("token")) {
         /* If we have an external login URL specified, then redirect to it. */
         String uri = new UriBuilder(loginUrl)
-          .add("locale", locale)
+          .add("locale", "ja")
           .add("repo", repo)
           .add("ng", newGalleryId)
           .add("galleryId", galleryId)
@@ -205,7 +205,7 @@ public class LoginServlet extends HttpServlet {
           return;
         } else if (!page.equals("token")) {
             String uri = new UriBuilder("/login/google")
-              .add("locale", locale)
+              .add("locale", "ja")
               .add("repo", repo)
               .add("ng", newGalleryId)
               .add("galleryId", galleryId)
