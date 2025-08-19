@@ -85,6 +85,8 @@ public abstract class AbstractPalettePanel<
   private String lastSearch = "";
   private Map<String, SimplePaletteItem> searchSimplePaletteItems = new HashMap<String, SimplePaletteItem>();
   private Scheduler.ScheduledCommand rebuild = null;
+  private static final java.util.EnumSet<ComponentCategory> HIDDEN =
+    java.util.EnumSet.of(ComponentCategory.LEGOMINDSTORMS, ComponentCategory.STORAGE);
 
   protected AbstractPalettePanel(U editor, ComponentFactory componentFactory) {
     this(editor, componentFactory, ComponentCategory.values());
@@ -253,6 +255,9 @@ public abstract class AbstractPalettePanel<
     }
     if (category == ComponentCategory.INTERNAL &&
         !AppInventorFeatures.showInternalComponentsCategory()) {
+      return false;
+    }
+    if (HIDDEN.contains(category)) {
       return false;
     }
     return true;
