@@ -81,8 +81,6 @@
     <property name="auth.usegoogle" value="false" />
     <property name="auth.uselocal" value="true" />
     <property name="localauth.mailserver" value="http://localhost:8000/passmail"/>
-    <property name="auth.hard.user" value="naijoakira@techtonix.co.jp"/>
-    <property name="auth.hard.pass" value="test1234"/>
 
     <!-- Flags associated with localauth code -->
     <property name="localauth.mailserver.password" value="changeme" />
